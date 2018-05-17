@@ -28,7 +28,7 @@ typedef enum EventFrequency : NSUInteger {
 @property NSUInteger completedNum;
 @property double completionRate;
 @property NSTimeInterval interval;
-@property NSDate *deadline;
+@property NSDate *deadlineDate;
 @property BOOL requiresLocation;
 @property BOOL isCompleted;
 @property EventFrequency frequency;
@@ -36,6 +36,7 @@ typedef enum EventFrequency : NSUInteger {
 @property BOOL missedDeadline;
 
 // Public Methods
++ (NSString *) deadlineStringForDate:(NSDate *)date;
 - (instancetype)initWithName:(NSString *)name frequency: (EventFrequency)frequency;
 - (instancetype)initWithName:(NSString *)name frequency: (EventFrequency)frequency requiresLocation:(BOOL)requiresLocation;
 - (NSString *) getEmoji;

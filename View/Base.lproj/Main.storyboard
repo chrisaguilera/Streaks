@@ -324,7 +324,14 @@
                         <color key="tintColor" red="0.9629203677" green="0.30191045999999999" blue="0.36379972100000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="kxw-Ji-Bvo"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Rot-U7-kIY"/>
+                    <navigationItem key="navigationItem" id="Rot-U7-kIY">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="O8M-aY-6hh">
+                            <color key="tintColor" red="0.98039215690000003" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <segue destination="fi5-Bu-fOY" kind="presentation" id="hDO-PD-c9l"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="bestProgressView" destination="mig-dF-jK4" id="Mwo-7L-SJ2"/>
                         <outlet property="bestStreakLabel" destination="PwJ-Y4-BpJ" id="bLC-CZ-Gkh"/>
@@ -441,24 +448,29 @@
                                 <fontDescription key="fontDescription" name="Rubik-Regular" family="Rubik" pointSize="30"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="TODAY" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lqx-TG-5gf">
-                                <rect key="frame" x="43" y="302" width="299" height="21"/>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uDT-vG-OMk">
+                                <rect key="frame" x="42" y="305" width="294" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Rubik-Regular" family="Rubik" pointSize="20"/>
-                                <color key="textColor" red="0.9629203677" green="0.30191045999999999" blue="0.36379972100000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="textColor" red="0.98039215690000003" green="0.31372549020000001" blue="0.31372549020000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="frb-Xb-N57"/>
                     </view>
                     <connections>
+                        <outlet property="bestStreakLabel" destination="2Ly-dn-81Y" id="IQr-sN-Dda"/>
+                        <outlet property="completionRateLabel" destination="dDp-2c-ntE" id="5Aw-ty-al6"/>
+                        <outlet property="currentStreakLabel" destination="tZI-jW-Ys0" id="hfb-aV-iD2"/>
+                        <outlet property="deadlineTextField" destination="uDT-vG-OMk" id="Mry-s2-yzq"/>
                         <outlet property="nameTextField" destination="ExW-uk-wIG" id="lLL-UX-5ro"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tt9-eL-cQw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2370" y="510"/>
+            <point key="canvasLocation" x="2368.8000000000002" y="509.59520239880067"/>
         </scene>
         <!--Streaks-->
         <scene sceneID="ByM-DH-Mmc">

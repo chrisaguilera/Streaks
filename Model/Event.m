@@ -23,16 +23,19 @@
         _requiresLocation = NO;
         _isCompleted = NO;
         _frequency = frequency;
+        _missedDeadline = NO;
         
         NSDate *now = [NSDate date];
-        if (self.frequency == kDaily) {
-            _deadline = [now dateByAddingTimeInterval:86400];
-        } else if (self.frequency == kWeekly) {
-            _deadline = [now dateByAddingTimeInterval:604800];
-        } else {
-            _deadline = [now dateByAddingTimeInterval:2592000];
-        }
-        _missedDeadline = NO;
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSCalendarUnit preservedComponents = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
+        NSDateComponents *components = [calendar components:preservedComponents fromDate:now];
+        [components setHour:23];
+        [components setMinute:59];
+        [components setSecond:59];
+        NSDate *normalizedDate = [calendar dateFromComponents:components];
+        
+        _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
+        
     }
     return self;
 }
@@ -49,16 +52,18 @@
         _requiresLocation = requiresLocation;
         _isCompleted = NO;
         _frequency = frequency;
+        _missedDeadline = NO;
         
         NSDate *now = [NSDate date];
-        if (self.frequency == kDaily) {
-            _deadline = [now dateByAddingTimeInterval:86400];
-        } else if (self.frequency == kWeekly) {
-            _deadline = [now dateByAddingTimeInterval:604800];
-        } else {
-            _deadline = [now dateByAddingTimeInterval:2592000];
-        }
-        _missedDeadline = NO;
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSCalendarUnit preservedComponents = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
+        NSDateComponents *components = [calendar components:preservedComponents fromDate:now];
+        [components setHour:23];
+        [components setMinute:59];
+        [components setSecond:59];
+        NSDate *normalizedDate = [calendar dateFromComponents:components];
+
+        _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
     }
     return self;
 }
@@ -72,15 +77,11 @@
     self.completedNum++;
     self.completionRate = (double)self.completedNum/(double)self.totalNum;
     self.isCompleted = YES;
-    // Compute deadline
-    NSDate *now = [NSDate date];
-    if (self.frequency == kDaily) {
-        _deadline = [now dateByAddingTimeInterval:86400];
-    } else if (self.frequency == kWeekly) {
-        _deadline = [now dateByAddingTimeInterval:604800];
-    } else {
-        _deadline = [now dateByAddingTimeInterval:2592000];
-    }
+    
+    // Compute new deadline
+//    NSDate *now = [NSDate date];
+    _deadlineDate = [self deadlineDateForDate:self.deadlineDate frequency:self.frequency];
+
     
 }
 
@@ -98,6 +99,31 @@
         emoji = @"🌈";
     }
     return emoji;
+}
+
+- (NSDate *) deadlineDateForDate:(NSDate *)date frequency:(EventFrequency)frequency {
+    NSDate *deadlineDate;
+    
+    if (frequency == kDaily) {
+        deadlineDate = [date dateByAddingTimeInterval:86400];
+    } else if (frequency == kWeekly) {
+        deadlineDate = [date dateByAddingTimeInterval:604800];
+    } else {
+        deadlineDate = [date dateByAddingTimeInterval:2592000];
+    }
+    
+    return deadlineDate;
+}
+
++ (NSString *) deadlineStringForDate:(NSDate *)date {
+    
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *destinationTimeZone = [NSTimeZone systemTimeZone];
+    formatter.timeZone = destinationTimeZone;
+    [formatter setDateStyle:NSDateFormatterLongStyle];
+    [formatter setDateFormat:@"MM-dd-yyyy hh:mm:ss a"];
+    
+    return [formatter stringFromDate:date];
 }
 
 @end

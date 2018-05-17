@@ -12,6 +12,11 @@
 @interface EditEventViewController ()
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
+@property (weak, nonatomic) IBOutlet UILabel *currentStreakLabel;
+@property (weak, nonatomic) IBOutlet UILabel *bestStreakLabel;
+@property (weak, nonatomic) IBOutlet UILabel *completionRateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *deadlineLabel;
+@property (weak, nonatomic) IBOutlet UITextField *deadlineTextField;
 
 @end
 
@@ -26,6 +31,13 @@
     self.nameTextField.text = self.event.name;
     self.nameTextField.layer.cornerRadius = 5;
     
+    // Visuals
+    self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.event.currentStreakLength];
+    self.bestStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.event.bestStreakLength];
+    self.completionRateLabel.text = [NSString stringWithFormat:@"%.f%%", self.event.completionRate * 100];
+    self.deadlineTextField.text = [Event deadlineStringForDate:self.event.deadlineDate];
+    self.deadlineTextField.layer.cornerRadius = 5;
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -39,6 +51,7 @@
 }
 
 - (IBAction)saveButtonPressed:(UIBarButtonItem *)sender {
+    [self.event setName:self.nameTextField.text];
     [self.nameTextField resignFirstResponder];
     self.completionHandler();
 }

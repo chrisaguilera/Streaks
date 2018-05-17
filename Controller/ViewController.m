@@ -49,6 +49,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     EventTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Default Cell" forIndexPath:indexPath];
+    
     // Create event
     Event *event = self.eventsModel.events[indexPath.section];
     
@@ -56,7 +57,7 @@
     cell.event = event;
     cell.nameLabel.text = event.name;
     cell.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long) event.currentStreakLength];
-    cell.deadlineLabel.text = [self getStringForDeadline:event.deadline];
+    cell.deadlineLabel.text = [Event deadlineStringForDate:cell.event.deadlineDate];
     
     return cell;
 }
@@ -110,8 +111,5 @@
 
 }
 
-- (NSString *)getStringForDeadline: (NSDate *) deadline {
-    return deadline.description;
-}
 
 @end

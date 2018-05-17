@@ -45,7 +45,6 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     self.locationManager.distanceFilter = 1.0;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     [self.locationManager requestWhenInUseAuthorization];
-    
     [self.locationManager startUpdatingLocation];
     
     // Visuals
@@ -60,7 +59,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
         [self.bestProgressView setProgress:(float)self.event.currentStreakLength/(float)self.event.bestStreakLength];
         [self.completionProgressView setProgress:self.event.completionRate];
     }
-    self.deadlineLabel.text = [self getStringForDeadline:self.event.deadline];
+    self.deadlineLabel.text = [Event deadlineStringForDate: self.event.deadlineDate];
     
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
@@ -88,7 +87,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
         [self.bestProgressView setProgress:(float)self.event.currentStreakLength/(float)self.event.bestStreakLength];
         [self.completionProgressView setProgress:self.event.completionRate];
     }
-    self.deadlineLabel.text = [self getStringForDeadline:self.event.deadline];
+    self.deadlineLabel.text = [Event deadlineStringForDate:self.event.deadlineDate];
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
     } else {
@@ -100,7 +99,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 }
 
 - (IBAction)completeButtonPressed:(UIButton *)sender {
-    // Determine whether the check-in requirement is met
+    // Determine whether the check-in requirement is met (if required)
     if (self.event.requiresLocation) {
         CLLocation *currentLocation = [self.locationManager location];
         MKMapPoint currentPoint = MKMapPointForCoordinate(currentLocation.coordinate);
@@ -139,10 +138,6 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
             [self dismissViewControllerAnimated:YES completion:^{}];
         };
     }
-}
-
-- (NSString *)getStringForDeadline: (NSDate *) deadline {
-    return deadline.description;
 }
 
 - (void) complete {

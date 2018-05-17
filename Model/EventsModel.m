@@ -17,6 +17,7 @@
     dispatch_once(&onceToken, ^{
         _sharedModel = [[self alloc] init];
     });
+    
     return _sharedModel;
 }
 
@@ -32,33 +33,59 @@
         NSString *filename = @"events.plist";
         _filePath = [NSString stringWithFormat:@"%@/%@", documentsDirPath, filename];
         NSLog(@"file path: %@", _filePath);
-//        NSArray *eventsFromDocumentsDir = [[NSArray alloc] initWithContentsOfFile:_filePath];
+        NSArray *eventsFromDocumentsDir = [[NSArray alloc] initWithContentsOfFile:_filePath];
         
+        NSLog(@"Events from Documents: %@", eventsFromDocumentsDir);
         
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"MM dd, yyyy"];
-        NSDate *date = [dateFormatter dateFromString:@"December 09, 2017"];
+//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//        [dateFormatter setDateFormat:@"MM-dd-yyyy hh:mm:ss a"];
+//        NSDate *date = [dateFormatter dateFromString:@"05-16-2018 11:59:59 PM"];
+//
+//        _events = [NSMutableArray arrayWithCapacity:5];
+//
+//        Event *event1 = [[Event alloc] initWithName:@"Go Jogging" frequency: kDaily];
+//        event1.totalNum = 50;
+//        event1.completedNum = 30;
+//        event1.currentStreakLength = 24;
+//        event1.bestStreakLength = 24;
+//        event1.completionRate = (float)event1.completedNum/(float)event1.totalNum;
+//        event1.deadlineDate = [date dateByAddingTimeInterval:86400];
+//
+//        Event *event2 = [[Event alloc] initWithName:@"Work on Streaks App" frequency: kWeekly];
+//        event2.totalNum = 20;
+//        event2.completedNum = 14;
+//        event2.currentStreakLength = 6;
+//        event2.bestStreakLength = 8;
+//        event2.completionRate = (float)event2.completedNum/(float)event2.totalNum;
+//
+//        [self.events addObject:event1];
+//        [self.events addObject:event2];
         
         _events = [NSMutableArray arrayWithCapacity:5];
-        
-        Event *event2 = [[Event alloc] initWithName:@"Go Jogging" frequency: kWeekly];
-        event2.totalNum = 50;
-        event2.completedNum = 30;
-        event2.currentStreakLength = 24;
-        event2.bestStreakLength = 24;
-        event2.completionRate = (float)event2.completedNum/(float)event2.totalNum;
-        event2.deadline = [date dateByAddingTimeInterval:604800];
-        
-        Event *event3 = [[Event alloc] initWithName:@"Work on Streaks App" frequency: kWeekly];
-        event3.totalNum = 20;
-        event3.completedNum = 14;
-        event3.currentStreakLength = 6;
-        event3.bestStreakLength = 8;
-        event3.completionRate = (float)event3.completedNum/(float)event3.totalNum;
-        event3.deadline = [date dateByAddingTimeInterval:604800];
-        
-        [self.events addObject:event2];
-        [self.events addObject:event3];
+
+        // Contruct events from array
+        for (NSObject *eventObject in eventsFromDocumentsDir) {
+
+            NSString *name = [eventObject valueForKey:@"name"];
+            EventFrequency frequency = [[eventObject valueForKey:@"eventFrequency"] integerValue];
+
+            // Create Event
+            Event *event = [[Event alloc] initWithName:name frequency:frequency];
+            
+            event.currentStreakLength = [[eventObject valueForKey:@"currentStreakLength"] integerValue];
+            event.bestStreakLength = [[eventObject valueForKey:@"bestStreakLength"] integerValue];
+            event.totalNum = [[eventObject valueForKey:@"totalNum"] integerValue];
+            event.completedNum = [[eventObject valueForKey:@"completedNum"] integerValue];
+            event.completionRate = [[eventObject valueForKey:@"completionRate"] doubleValue];
+            event.interval = [[eventObject valueForKey:@"interval"] integerValue];
+            event.deadlineDate = [eventObject valueForKey:@"deadlineDate"];
+            event.requiresLocation = [[eventObject valueForKey:@"requiresLocation"] integerValue];
+            event.isCompleted = [[eventObject valueForKey:@"isCompleted"] integerValue];
+            event.missedDeadline = [[eventObject valueForKey:@"missedDeadline"] integerValue];
+
+            // Add Event to events
+            [self.events addObject:event];
+        }
     }
     return self;
 }
@@ -83,25 +110,25 @@
 
 - (void) save {
     
-//    NSMutableArray *eventDictionaries = [[NSMutableArray alloc] init];
-//    for (Event *event in self.events) {
-//        NSDictionary *eventDictionary = @{
-//                                          @"name": event.name,
-//                                          @"currentStreakLength": [NSNumber numberWithInt:event.currentStreakLength],
-//                                          @"bestStreakLength": [NSNumber numberWithInt:event.bestStreakLength],
-//                                          @"totalNum": [NSNumber numberWithInt:event.totalNum],
-//                                          @"completedNum": [NSNumber numberWithInt:event.completedNum],
-//                                          @"completionRate": [NSNumber numberWithDouble:event.completionRate],
-//                                          @"interval": [NSNumber numberWithDouble:event.interval],
-//                                          @"deadline": event.deadline,
-//                                          @"requiresLocation": [NSNumber numberWithBool:event.requiresLocation],
-//                                          @"isCompleted": [NSNumber numberWithBool:event.isCompleted],
-//                                          @"eventFrequency":[NSNumber numberWithInt:event.frequency],
-//                                          @"missedDeadline": [NSNumber numberWithBool:event.missedDeadline]
-//                                          };
-//        [eventDictionaries addObject:eventDictionary];
-//    }
-//    [eventDictionaries writeToFile:self.filePath atomically:YES];
+    NSMutableArray *eventDictionaries = [[NSMutableArray alloc] init];
+    for (Event *event in self.events) {
+        NSDictionary *eventDictionary = @{
+                                          @"name": event.name,
+                                          @"currentStreakLength": [NSNumber numberWithInt:event.currentStreakLength],
+                                          @"bestStreakLength": [NSNumber numberWithInt:event.bestStreakLength],
+                                          @"totalNum": [NSNumber numberWithInt:event.totalNum],
+                                          @"completedNum": [NSNumber numberWithInt:event.completedNum],
+                                          @"completionRate": [NSNumber numberWithDouble:event.completionRate],
+                                          @"interval": [NSNumber numberWithDouble:event.interval],
+                                          @"deadlineDate": event.deadlineDate,
+                                          @"requiresLocation": [NSNumber numberWithBool:event.requiresLocation],
+                                          @"isCompleted": [NSNumber numberWithBool:event.isCompleted],
+                                          @"eventFrequency":[NSNumber numberWithInt:event.frequency],
+                                          @"missedDeadline": [NSNumber numberWithBool:event.missedDeadline]
+                                          };
+        [eventDictionaries addObject:eventDictionary];
+    }
+    [eventDictionaries writeToFile:self.filePath atomically:YES];
     
 }
 

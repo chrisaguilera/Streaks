@@ -38,7 +38,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 - (void) updateTableViewCell {
     self.nameLabel.text = self.event.name;
     self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long) self.event.currentStreakLength];
-    self.deadlineLabel.text = [self getStringForDeadline:self.event.deadline];
+    self.deadlineLabel.text = [Event deadlineStringForDate:self.event.deadlineDate];
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
     } else {
@@ -59,10 +59,6 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     
     [self.event completeEvent];
     [self updateTableViewCell];
-}
-
-- (NSString *)getStringForDeadline: (NSDate *) deadline {
-    return deadline.description;
 }
 
 @end
