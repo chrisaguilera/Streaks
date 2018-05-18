@@ -9,6 +9,7 @@
 
 #import <UIKit/UIKit.h>
 #import "../Model/Event.h"
+#import "../Model/EventsModel.h"
 
 typedef void (^EventPageViewControllerCompletionHandler)(void);
 

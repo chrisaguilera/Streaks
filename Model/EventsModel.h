@@ -22,5 +22,6 @@
 - (Event *) eventAtIndex: (NSUInteger)index;
 - (void) removeEventAtIndex: (NSUInteger) index;
 - (void) addEventsObject:(Event*) event;
+- (void) save;
 
 @end

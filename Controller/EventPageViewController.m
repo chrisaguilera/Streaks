@@ -142,6 +142,8 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 
 - (void) complete {
     // Event was completed
+    
+    // Vibration
     NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     NSMutableArray* arr = [NSMutableArray array ];
     [arr addObject:[NSNumber numberWithBool:YES]];
@@ -152,6 +154,10 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     
     [self.event completeEvent];
     [self updateEventPage];
+    
+    EventsModel *eventsModel = [EventsModel sharedModel];
+    [eventsModel save];
+    
 }
 - (IBAction)shareButtonPressed:(UIButton *)sender {
     FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];

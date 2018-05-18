@@ -79,9 +79,9 @@
             event.completionRate = [[eventObject valueForKey:@"completionRate"] doubleValue];
             event.interval = [[eventObject valueForKey:@"interval"] integerValue];
             event.deadlineDate = [eventObject valueForKey:@"deadlineDate"];
-            event.requiresLocation = [[eventObject valueForKey:@"requiresLocation"] integerValue];
-            event.isCompleted = [[eventObject valueForKey:@"isCompleted"] integerValue];
-            event.missedDeadline = [[eventObject valueForKey:@"missedDeadline"] integerValue];
+            event.requiresLocation = [[eventObject valueForKey:@"requiresLocation"] boolValue];
+            event.isCompleted = [[eventObject valueForKey:@"isCompleted"] boolValue];
+            event.missedDeadline = [[eventObject valueForKey:@"missedDeadline"] boolValue];
 
             // Add Event to events
             [self.events addObject:event];
@@ -129,7 +129,8 @@
         [eventDictionaries addObject:eventDictionary];
     }
     [eventDictionaries writeToFile:self.filePath atomically:YES];
-    
+//    NSLog(@"%@", eventDictionaries);
+    NSLog(@"Save complete!");
 }
 
 @end

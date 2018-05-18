@@ -69,6 +69,7 @@
 }
 
 - (void)completeEvent {
+    
     self.currentStreakLength++;
     if (self.currentStreakLength > self.bestStreakLength) {
         self.bestStreakLength = self.currentStreakLength;

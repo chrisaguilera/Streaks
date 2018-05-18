@@ -9,11 +9,13 @@
 
 #import <UIKit/UIKit.h>
 #import "../Model/Event.h"
+#import "../Model/EventsModel.h"
 
 typedef  void(^EditEventViewControllerCompletionHandler)(void);
 
 @interface EditEventViewController : UIViewController
 
+@property (strong, nonatomic) EventsModel *eventsModel;
 @property (strong, nonatomic) Event *event;
 @property (copy, nonatomic) EditEventViewControllerCompletionHandler completionHandler;
 

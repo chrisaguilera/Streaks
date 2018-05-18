@@ -55,9 +55,11 @@
     
     // Set event for table view cell
     cell.event = event;
+    
     cell.nameLabel.text = event.name;
     cell.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long) event.currentStreakLength];
     cell.deadlineLabel.text = [Event deadlineStringForDate:cell.event.deadlineDate];
+    [cell updateTableViewCell];
     
     return cell;
 }
