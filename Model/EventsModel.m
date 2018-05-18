@@ -82,7 +82,15 @@
             event.requiresLocation = [[eventObject valueForKey:@"requiresLocation"] boolValue];
             event.isCompleted = [[eventObject valueForKey:@"isCompleted"] boolValue];
             event.missedDeadline = [[eventObject valueForKey:@"missedDeadline"] boolValue];
-
+            
+            // Construckt coordinateLocation
+            CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[eventObject valueForKey:@"latitude"] doubleValue],
+                                                                      [[eventObject valueForKey:@"longitude"] doubleValue]);
+            MKCoordinateSpan span = MKCoordinateSpanMake([[eventObject valueForKey:@"latitudeDelta"] doubleValue],
+                                                         [[eventObject valueForKey:@"longitudeDelta"] doubleValue]);
+            MKCoordinateRegion coordinateRegion = {coord, span};
+            event.coordinateRegion = coordinateRegion;
+            
             // Add Event to events
             [self.events addObject:event];
         }
@@ -112,6 +120,12 @@
     
     NSMutableArray *eventDictionaries = [[NSMutableArray alloc] init];
     for (Event *event in self.events) {
+        
+        NSLog(@"Latitude: %f", event.coordinateRegion.center.latitude);
+        NSLog(@"Longitude: %f", event.coordinateRegion.center.longitude);
+        NSLog(@"Latitude Delta: %f", event.coordinateRegion.span.latitudeDelta);
+        NSLog(@"Longitude Delta: %f", event.coordinateRegion.span.longitudeDelta);
+
         NSDictionary *eventDictionary = @{
                                           @"name": event.name,
                                           @"currentStreakLength": [NSNumber numberWithInt:event.currentStreakLength],
@@ -124,7 +138,11 @@
                                           @"requiresLocation": [NSNumber numberWithBool:event.requiresLocation],
                                           @"isCompleted": [NSNumber numberWithBool:event.isCompleted],
                                           @"eventFrequency":[NSNumber numberWithInt:event.frequency],
-                                          @"missedDeadline": [NSNumber numberWithBool:event.missedDeadline]
+                                          @"missedDeadline": [NSNumber numberWithBool:event.missedDeadline],
+                                          @"latitude": [NSNumber numberWithFloat:event.coordinateRegion.center.latitude],
+                                          @"longitude": [NSNumber numberWithFloat:event.coordinateRegion.center.longitude],
+                                          @"latitudeDelta": [NSNumber numberWithFloat:event.coordinateRegion.span.latitudeDelta],
+                                          @"longitudeDelta": [NSNumber numberWithFloat:event.coordinateRegion.span.longitudeDelta]
                                           };
         [eventDictionaries addObject:eventDictionary];
     }
