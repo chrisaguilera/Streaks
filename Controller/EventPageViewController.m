@@ -24,6 +24,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 @property (weak, nonatomic) IBOutlet UILabel *bestStreakLabel;
 @property (weak, nonatomic) IBOutlet UILabel *completionRateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *deadlineLabel;
+@property (weak, nonatomic) IBOutlet UILabel *prevDeadlineLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *bestProgressView;
 @property (weak, nonatomic) IBOutlet UIProgressView *completionProgressView;
 @property (weak, nonatomic) IBOutlet UIButton *completeButton;
@@ -68,8 +69,10 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
+        self.prevDeadlineLabel.text = [Event deadlineStringForDate:self.event.prevDeadlineDate];
     } else {
         [self.completeButton setEnabled:YES];
+        self.prevDeadlineLabel.text = @"NOW";
     }
     if (self.event.requiresLocation) {
         [self.mapView setHidden:NO];
@@ -95,8 +98,10 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     self.deadlineLabel.text = [Event deadlineStringForDate:self.event.deadlineDate];
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
+        self.prevDeadlineLabel.text = [Event deadlineStringForDate:self.event.prevDeadlineDate];
     } else {
         [self.completeButton setEnabled:YES];
+        self.prevDeadlineLabel.text = @"NOW";
     }
     
     // Update corresponding table view cell
