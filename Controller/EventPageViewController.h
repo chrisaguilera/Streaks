@@ -13,7 +13,7 @@
 
 typedef void (^EventPageViewControllerCompletionHandler)(void);
 
-@interface EventPageViewController : UIViewController
+@interface EventPageViewController : UIViewController 
 
 @property (strong, nonatomic) Event *event;
 @property (copy, nonatomic) EventPageViewControllerCompletionHandler completionHandler;

@@ -27,6 +27,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self.tableView setShowsVerticalScrollIndicator:NO];
+    
     self.eventsModel = [EventsModel sharedModel];
     
 //    self.navigationItem.leftBarButtonItem = self.editButtonItem;
@@ -35,6 +37,13 @@
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     backButton.tintColor = [UIColor colorWithRed:246.0f/255.0f green:77.0f/255.0f blue:93.0f/255.0f alpha:1.0];
     [[self navigationItem] setBackBarButtonItem:backButton];
+    
+    
+    // EventModelDelegate
+    self.eventsModel.viewControllerDelegate = self;
+    [self.eventsModel startTimer];
+    
+    
 }
 
 #pragma mark - Table view data source
@@ -111,6 +120,13 @@
         };
     }
 
+}
+
+#pragma mark - EventsModelDelegate
+
+- (void) modelHasChanged {
+    [self.tableView reloadData];
+    NSLog(@"Delegate 1: This is from View Controller: Model has changed!");
 }
 
 

@@ -17,7 +17,7 @@
 
 FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystemSoundID,id arg,NSDictionary* vibratePattern);
 
-@interface EventPageViewController () <CLLocationManagerDelegate>
+@interface EventPageViewController () <CLLocationManagerDelegate, EventsModelDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *eventNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *currentStreakLabel;
@@ -46,6 +46,11 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     [self.locationManager requestWhenInUseAuthorization];
     [self.locationManager startUpdatingLocation];
+    
+    // EventModelDelegate
+    EventsModel *eventModel = [EventsModel sharedModel];
+    eventModel.eventPageViewControllerDelegate = self;
+    NSLog(@"Added EPVC as Delegate");
     
     // Visuals
     self.eventNameLabel.text = self.event.name;
@@ -118,7 +123,8 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     }
 }
 
-// Location Manager Delegate
+#pragma mark - CLLocationManagerDelegate
+
 - (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
 }
 
@@ -165,6 +171,13 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     [FBSDKShareDialog showFromViewController:self
                                  withContent:content
                                     delegate:nil];
+}
+
+#pragma mark - EventsModelDelegate
+
+- (void) modelHasChanged {
+    [self updateEventPage];
+    NSLog(@"Delegate 2: This is from Event Page View Controller: Model has changed!");
 }
 
 @end

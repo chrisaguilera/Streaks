@@ -42,7 +42,6 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
     } else {
-        NSLog(@"Event is not completed");
         [self.completeButton setEnabled:YES];
     }
     

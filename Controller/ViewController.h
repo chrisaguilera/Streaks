@@ -8,8 +8,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EventsModel.h"
 
-@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, EventsModelDelegate>
 
 
 @end
