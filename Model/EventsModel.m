@@ -35,7 +35,7 @@
         NSLog(@"file path: %@", _filePath);
         NSArray *eventsFromDocumentsDir = [[NSArray alloc] initWithContentsOfFile:_filePath];
         
-        NSLog(@"Events from Documents: %@", eventsFromDocumentsDir);
+         NSLog(@"Events from Documents: %@", eventsFromDocumentsDir);
         
         _events = [NSMutableArray arrayWithCapacity:5];
         
@@ -61,9 +61,9 @@
         event2.missedDeadline = NO;
         
         NSDate *now = [NSDate date];
-        NSDate *deadlineDate1 = [now dateByAddingTimeInterval:60];
-        NSDate *prevDeadlineDate = [now dateByAddingTimeInterval:60];
-        NSDate *deadlineDate2 = [now dateByAddingTimeInterval:86460];
+        NSDate *deadlineDate1 = [now dateByAddingTimeInterval:120];
+        NSDate *prevDeadlineDate = [now dateByAddingTimeInterval:120];
+        NSDate *deadlineDate2 = [now dateByAddingTimeInterval:86520];
         event1.deadlineDate = deadlineDate1;
         event2.prevDeadlineDate = prevDeadlineDate;
         event2.deadlineDate = deadlineDate2;
@@ -76,7 +76,8 @@
         [self.events addObject:event1];
         [self.events addObject:event2];
         */
-
+        
+        
         // Contruct events from array
         for (NSObject *eventObject in eventsFromDocumentsDir) {
 
@@ -100,6 +101,7 @@
             event.completedNum = [[eventObject valueForKey:@"completedNum"] integerValue];
             event.completionRate = [[eventObject valueForKey:@"completionRate"] doubleValue];
             event.interval = [[eventObject valueForKey:@"interval"] integerValue];
+            event.prevDeadlineDate = [eventObject valueForKey:@"prevDeadlineDate"];
             event.deadlineDate = [eventObject valueForKey:@"deadlineDate"];
             event.requiresLocation = [[eventObject valueForKey:@"requiresLocation"] boolValue];
             event.isCompleted = [[eventObject valueForKey:@"isCompleted"] boolValue];
@@ -109,6 +111,7 @@
             // Add Event to events
             [self.events addObject:event];
         }
+        
     }
     return self;
 }
@@ -145,6 +148,7 @@
                                           @"completedNum": [NSNumber numberWithInt:event.completedNum],
                                           @"completionRate": [NSNumber numberWithDouble:event.completionRate],
                                           @"interval": [NSNumber numberWithDouble:event.interval],
+                                          @"prevDeadlineDate": event.prevDeadlineDate,
                                           @"deadlineDate": event.deadlineDate,
                                           @"requiresLocation": [NSNumber numberWithBool:event.requiresLocation],
                                           @"isCompleted": [NSNumber numberWithBool:event.isCompleted],

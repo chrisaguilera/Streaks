@@ -43,6 +43,7 @@ typedef enum EventFrequency : NSUInteger {
 - (NSString *) getEmoji;
 - (void)completeEvent;
 - (void)failedEvent;
+- (void)makeAvailableForCompletion;
 - (bool)hasDeadlineBeenReached;
 
 @end

@@ -41,13 +41,16 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     self.deadlineLabel.text = [Event deadlineStringForDate:self.event.deadlineDate];
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
+        self.prevDeadlineLabel.text = [Event deadlineStringForDate:self.event.prevDeadlineDate];
     } else {
         [self.completeButton setEnabled:YES];
+        self.prevDeadlineLabel.text = @"NOW";
     }
     
 }
 
 - (IBAction)completeButtonPressed:(UIButton *)sender {
+    
     // Vibrate
     NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     NSMutableArray* arr = [NSMutableArray array ];
@@ -57,9 +60,11 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     [dict setObject:[NSNumber numberWithInt:1] forKey:@"Intensity"];
     AudioServicesPlaySystemSoundWithVibration(4095,nil,dict);
     
+    
     [self.event completeEvent];
     [self updateTableViewCell];
     
+    // Save Model
     EventsModel *eventsModel = [EventsModel sharedModel];
     [eventsModel save];
 }

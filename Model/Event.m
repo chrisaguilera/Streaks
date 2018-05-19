@@ -35,7 +35,7 @@
         NSDate *normalizedDate = [calendar dateFromComponents:components];
         
         _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
-        
+        _prevDeadlineDate = self.deadlineDate;
     }
     return self;
 }
@@ -64,6 +64,7 @@
         NSDate *normalizedDate = [calendar dateFromComponents:components];
 
         _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
+        _prevDeadlineDate = self.deadlineDate;
     }
     return self;
 }
@@ -89,25 +90,48 @@
     self.totalNum++;
     self.completionRate = (double)self.completedNum/(double)self.totalNum;
     self.isCompleted = NO;
+    
     // Compute new deadline
     _prevDeadlineDate = self.deadlineDate;
     _deadlineDate = [self deadlineDateForDate:self.deadlineDate frequency:self.frequency];
 }
 
-- (NSString * ) getEmoji {
-    NSString *emoji;
-    if (self.currentStreakLength < 5) {
-        emoji = @"";
-    } else if (self.currentStreakLength < 15) {
-        emoji = @"🔥";
-    } else if (self.currentStreakLength < 30) {
-        emoji = @"☄️";
-    } else if (self.currentStreakLength < 100){
-        emoji = @"⚡️";
+- (void) makeAvailableForCompletion {
+    // Event is no longer completed
+    self.isCompleted = NO;
+    self.prevDeadlineDate = self.deadlineDate;
+}
+
+- (bool) hasDeadlineBeenReached {
+    
+    BOOL deadlineReached = NO;
+    
+    if (self.isCompleted) {
+        if ([self.prevDeadlineDate timeIntervalSinceNow] < 0.0) {
+            // Available to complete event for next deadline
+            // NSLog(@"Prev Deadline for %@ Reached!", self.name);
+            
+            // Update event
+            [self makeAvailableForCompletion];
+            
+            // Update views
+            deadlineReached = YES;
+            
+        }
     } else {
-        emoji = @"🌈";
+        if ([self.deadlineDate timeIntervalSinceNow] < 0.0) {
+            // Event deadline was missed, take appropriate action
+            // NSLog(@"Missed Deadline for %@", self.name);
+            
+            // Update event
+            [self failedEvent];
+            
+            // Update views
+            deadlineReached = YES;
+        }
     }
-    return emoji;
+    
+    return deadlineReached;
 }
 
 - (NSDate *) deadlineDateForDate:(NSDate *)date frequency:(EventFrequency)frequency {
@@ -135,36 +159,20 @@
     return [formatter stringFromDate:date];
 }
 
-- (bool) hasDeadlineBeenReached {
-    
-    BOOL deadlineReached = NO;
-    
-    if (self.isCompleted) {
-        if ([self.prevDeadlineDate timeIntervalSinceNow] < 0.0) {
-            // Available to complete event for next deadline
-            // NSLog(@"Prev Deadline for %@ Reached!", self.name);
-            
-            // Update event
-            self.isCompleted = NO;
-            
-            // Update views
-            deadlineReached = YES;
-            
-        }
+- (NSString * ) getEmoji {
+    NSString *emoji;
+    if (self.currentStreakLength < 5) {
+        emoji = @"";
+    } else if (self.currentStreakLength < 15) {
+        emoji = @"🔥";
+    } else if (self.currentStreakLength < 30) {
+        emoji = @"☄️";
+    } else if (self.currentStreakLength < 100){
+        emoji = @"⚡️";
     } else {
-        if ([self.deadlineDate timeIntervalSinceNow] < 0.0) {
-            // Event deadline was missed, take appropriate action
-            // NSLog(@"Missed Deadline for %@", self.name);
-            
-            // Update event
-            [self failedEvent];
-            
-            // Update views
-            deadlineReached = YES;
-        }
+        emoji = @"🌈";
     }
-    
-    return deadlineReached;
+    return emoji;
 }
 
 @end
