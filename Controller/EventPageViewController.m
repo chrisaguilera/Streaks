@@ -182,7 +182,6 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 
 - (void) modelHasChanged {
     [self updateEventPage];
-    NSLog(@"Delegate 2: This is from Event Page View Controller: Model has changed!");
 }
 
 @end

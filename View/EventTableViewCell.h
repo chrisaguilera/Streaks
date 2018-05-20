@@ -11,6 +11,10 @@
 #import "../Model/Event.h"
 #import "../Model/EventsModel.h"
 
+@protocol EventTableViewCellDelegate <NSObject>
+-(void)invalidLocationForCheckIn;
+@end
+
 @interface EventTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -20,6 +24,7 @@
 
 
 @property (strong, nonatomic) Event *event;
+@property (nonatomic, strong) id <EventTableViewCellDelegate> delegate;
 
 - (void) updateTableViewCell;
 

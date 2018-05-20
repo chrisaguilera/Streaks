@@ -51,22 +51,74 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 
 - (IBAction)completeButtonPressed:(UIButton *)sender {
     
-    // Vibrate
-    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-    NSMutableArray* arr = [NSMutableArray array ];
-    [arr addObject:[NSNumber numberWithBool:YES]];
-    [arr addObject:[NSNumber numberWithInt:10]];
-    [dict setObject:arr forKey:@"VibePattern"];
-    [dict setObject:[NSNumber numberWithInt:1] forKey:@"Intensity"];
-    AudioServicesPlaySystemSoundWithVibration(4095,nil,dict);
+    if (self.event.requiresLocation) {
+        
+        CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+        locationManager.distanceFilter = 1.0;
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        [locationManager requestWhenInUseAuthorization];
+        [locationManager startUpdatingLocation];
+        CLLocation *currentLocation = [locationManager location];
+        
+        MKMapPoint currentMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
+        
+        // Make MKMapRect
+        MKMapRect mapRect = [self MKMapRectForCoordinateRegion:self.event.coordinateRegion];
+        
+        BOOL inRegion = MKMapRectContainsPoint(mapRect, currentMapPoint);
+        
+        if(inRegion) {
+            
+            // Vibrate
+            NSMutableDictionary* dict = [NSMutableDictionary dictionary];
+            NSMutableArray* arr = [NSMutableArray array ];
+            [arr addObject:[NSNumber numberWithBool:YES]];
+            [arr addObject:[NSNumber numberWithInt:10]];
+            [dict setObject:arr forKey:@"VibePattern"];
+            [dict setObject:[NSNumber numberWithInt:1] forKey:@"Intensity"];
+            AudioServicesPlaySystemSoundWithVibration(4095,nil,dict);
+            
+            [self.event completeEvent];
+            [self updateTableViewCell];
+            
+            // Save Model
+            EventsModel *eventsModel = [EventsModel sharedModel];
+            [eventsModel save];
+            
+        } else {
+            [self.delegate invalidLocationForCheckIn];
+        }
+        
+    } else {
+        
+        // Vibrate
+        NSMutableDictionary* dict = [NSMutableDictionary dictionary];
+        NSMutableArray* arr = [NSMutableArray array ];
+        [arr addObject:[NSNumber numberWithBool:YES]];
+        [arr addObject:[NSNumber numberWithInt:10]];
+        [dict setObject:arr forKey:@"VibePattern"];
+        [dict setObject:[NSNumber numberWithInt:1] forKey:@"Intensity"];
+        AudioServicesPlaySystemSoundWithVibration(4095,nil,dict);
+        
+        [self.event completeEvent];
+        [self updateTableViewCell];
+        
+        // Save Model
+        EventsModel *eventsModel = [EventsModel sharedModel];
+        [eventsModel save];
+    }
     
-    
-    [self.event completeEvent];
-    [self updateTableViewCell];
-    
-    // Save Model
-    EventsModel *eventsModel = [EventsModel sharedModel];
-    [eventsModel save];
+}
+
+- (MKMapRect)MKMapRectForCoordinateRegion:(MKCoordinateRegion)region
+{
+    MKMapPoint a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+                                                                      region.center.latitude + region.span.latitudeDelta / 2,
+                                                                      region.center.longitude - region.span.longitudeDelta / 2));
+    MKMapPoint b = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+                                                                      region.center.latitude - region.span.latitudeDelta / 2,
+                                                                      region.center.longitude + region.span.longitudeDelta / 2));
+    return MKMapRectMake(MIN(a.x,b.x), MIN(a.y,b.y), ABS(a.x-b.x), ABS(a.y-b.y));
 }
 
 @end

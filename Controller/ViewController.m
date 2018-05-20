@@ -70,6 +70,9 @@
     cell.deadlineLabel.text = [Event deadlineStringForDate:cell.event.deadlineDate];
     [cell updateTableViewCell];
     
+    // Delegate
+    cell.delegate = self;
+    
     return cell;
 }
 
@@ -126,7 +129,15 @@
 
 - (void) modelHasChanged {
     [self.tableView reloadData];
-    NSLog(@"Delegate 1: This is from View Controller: Model has changed!");
+}
+
+#pragma mark - EventTableViewCellDelegate
+
+- (void)invalidLocationForCheckIn {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Check-in Required" message:@"You must be within the check-in region to complete the event." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 
