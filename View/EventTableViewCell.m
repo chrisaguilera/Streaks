@@ -37,7 +37,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 
 - (void) updateTableViewCell {
     self.nameLabel.text = self.event.name;
-    self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long) self.event.currentStreakLength];
+    self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long) self.event.currentStreakLength, self.event.getEmoji];
     self.deadlineLabel.text = [Event deadlineStringForDate:self.event.deadlineDate];
     if (self.event.isCompleted) {
         [self.completeButton setEnabled:NO];
@@ -68,55 +68,43 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
         BOOL inRegion = MKMapRectContainsPoint(mapRect, currentMapPoint);
         
         if(inRegion) {
-            
-            // Vibrate
-            NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-            NSMutableArray* arr = [NSMutableArray array ];
-            [arr addObject:[NSNumber numberWithBool:YES]];
-            [arr addObject:[NSNumber numberWithInt:10]];
-            [dict setObject:arr forKey:@"VibePattern"];
-            [dict setObject:[NSNumber numberWithInt:1] forKey:@"Intensity"];
-            AudioServicesPlaySystemSoundWithVibration(4095,nil,dict);
-            
-            [self.event completeEvent];
-            [self updateTableViewCell];
-            
-            // Save Model
-            EventsModel *eventsModel = [EventsModel sharedModel];
-            [eventsModel save];
-            
+            [self complete];
         } else {
             [self.delegate invalidLocationForCheckIn];
         }
         
     } else {
-        
-        // Vibrate
-        NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-        NSMutableArray* arr = [NSMutableArray array ];
-        [arr addObject:[NSNumber numberWithBool:YES]];
-        [arr addObject:[NSNumber numberWithInt:10]];
-        [dict setObject:arr forKey:@"VibePattern"];
-        [dict setObject:[NSNumber numberWithInt:1] forKey:@"Intensity"];
-        AudioServicesPlaySystemSoundWithVibration(4095,nil,dict);
-        
-        [self.event completeEvent];
-        [self updateTableViewCell];
-        
-        // Save Model
-        EventsModel *eventsModel = [EventsModel sharedModel];
-        [eventsModel save];
+        [self complete];
     }
     
 }
 
+- (void) complete {
+    
+    // Vibrate
+    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
+    NSMutableArray* arr = [NSMutableArray array ];
+    [arr addObject:[NSNumber numberWithBool:YES]];
+    [arr addObject:[NSNumber numberWithInt:10]];
+    [dict setObject:arr forKey:@"VibePattern"];
+    [dict setObject:[NSNumber numberWithInt:1] forKey:@"Intensity"];
+    AudioServicesPlaySystemSoundWithVibration(4095,nil,dict);
+    
+    // Update Model
+    [self.event completeEvent];
+    // Update View
+    [self updateTableViewCell];
+    
+    // Save Model
+    EventsModel *eventsModel = [EventsModel sharedModel];
+    [eventsModel save];
+}
+
 - (MKMapRect)MKMapRectForCoordinateRegion:(MKCoordinateRegion)region
 {
-    MKMapPoint a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
-                                                                      region.center.latitude + region.span.latitudeDelta / 2,
+    MKMapPoint a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(region.center.latitude + region.span.latitudeDelta / 2,
                                                                       region.center.longitude - region.span.longitudeDelta / 2));
-    MKMapPoint b = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
-                                                                      region.center.latitude - region.span.latitudeDelta / 2,
+    MKMapPoint b = MKMapPointForCoordinate(CLLocationCoordinate2DMake( region.center.latitude - region.span.latitudeDelta / 2,
                                                                       region.center.longitude + region.span.longitudeDelta / 2));
     return MKMapRectMake(MIN(a.x,b.x), MIN(a.y,b.y), ABS(a.x-b.x), ABS(a.y-b.y));
 }

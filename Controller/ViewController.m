@@ -41,9 +41,21 @@
     
     // EventModelDelegate
     self.eventsModel.viewControllerDelegate = self;
+    
+    // Check deadlines for all events on startup
+    for (Event *event in self.eventsModel.events) {
+        if ([event hasDeadlineBeenReached]) {
+            
+            [self modelHasChanged];
+            
+            // Save changed model
+            [self.eventsModel save];
+            
+        }
+    }
+    
     [self.eventsModel startTimer];
-    
-    
+
 }
 
 #pragma mark - Table view data source
@@ -66,7 +78,7 @@
     cell.event = event;
     
     cell.nameLabel.text = event.name;
-    cell.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long) event.currentStreakLength];
+    cell.currentStreakLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long) event.currentStreakLength, event.getEmoji];
     cell.deadlineLabel.text = [Event deadlineStringForDate:cell.event.deadlineDate];
     [cell updateTableViewCell];
     
@@ -89,7 +101,8 @@
         [self.eventsModel removeEventAtIndex:indexPath.section];
         
         // Animates the deletion
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+        
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }
@@ -111,9 +124,21 @@
     if ([segue.destinationViewController isKindOfClass:[EventPageViewController class]]) {
         EventPageViewController *epvc = segue.destinationViewController;
         epvc.event = self.eventsModel.events[self.selectedCellRow];
+        
+        // Check deadline for event when going to event page
+        if ([epvc.event hasDeadlineBeenReached]) {
+            
+            [epvc updateEventPage];
+            
+            // Save changed model
+            [self.eventsModel save];
+            
+        }
+        
         epvc.completionHandler = ^(){
             [[self.tableView cellForRowAtIndexPath: [NSIndexPath indexPathForRow:0 inSection:self.selectedCellRow]] updateTableViewCell];
         };
+        
     } else {
         AddEventViewController *avc = segue.destinationViewController;
         avc.completionHandler = ^(){

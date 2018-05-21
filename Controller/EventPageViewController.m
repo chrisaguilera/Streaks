@@ -55,7 +55,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
     
     // Visuals
     self.eventNameLabel.text = self.event.name;
-    self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.event.currentStreakLength];
+    self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long)self.event.currentStreakLength, self.event.getEmoji];
     self.bestStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.event.bestStreakLength];
     self.completionRateLabel.text = [NSString stringWithFormat:@"%.f%%", self.event.completionRate * 100];
     if (self.event.totalNum == 0) {
@@ -85,7 +85,7 @@ FOUNDATION_EXTERN void AudioServicesPlaySystemSoundWithVibration(UInt32 inSystem
 - (void) updateEventPage {
     // Update the visual elements of the event page
     self.eventNameLabel.text = self.event.name;
-    self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.event.currentStreakLength];
+    self.currentStreakLabel.text = [NSString stringWithFormat:@"%lu %@", (unsigned long)self.event.currentStreakLength, self.event.getEmoji];
     self.bestStreakLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.event.bestStreakLength];
     self.completionRateLabel.text = [NSString stringWithFormat:@"%.f%%", self.event.completionRate * 100];
     if (self.event.totalNum == 0) {

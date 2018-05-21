@@ -18,4 +18,6 @@ typedef void (^EventPageViewControllerCompletionHandler)(void);
 @property (strong, nonatomic) Event *event;
 @property (copy, nonatomic) EventPageViewControllerCompletionHandler completionHandler;
 
+- (void) updateEventPage;
+
 @end

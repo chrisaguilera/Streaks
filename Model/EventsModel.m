@@ -170,23 +170,19 @@
     
     void (^timerBlock)(NSTimer *) = ^(NSTimer *timer){
         
-        BOOL modelHasChanged = NO;
         
         // Check deadlines for all events
         for (Event *event in self.events) {
             if ([event hasDeadlineBeenReached]) {
-                modelHasChanged = YES;
-            }
+                
+                // Notify delegates (Message from model to view controller)
+                [self.viewControllerDelegate modelHasChanged];
+                [self.eventPageViewControllerDelegate modelHasChanged];
+                
+                // Save changed model
+                [self save];            }
         }
         
-        // Send message to delegate
-        if (modelHasChanged) {
-            [self.viewControllerDelegate modelHasChanged];
-            [self.eventPageViewControllerDelegate modelHasChanged];
-            
-            // Save changed model
-            [self save];
-        }
     };
     
     [NSTimer scheduledTimerWithTimeInterval:2.0f repeats:YES block:timerBlock];

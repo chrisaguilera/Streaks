@@ -34,7 +34,11 @@
         [components setSecond:59];
         NSDate *normalizedDate = [calendar dateFromComponents:components];
         
-        _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
+        if (frequency == kDaily) {
+            _deadlineDate = normalizedDate;
+        } else {
+            _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
+        }
         _prevDeadlineDate = self.deadlineDate;
     }
     return self;
@@ -63,7 +67,11 @@
         [components setSecond:59];
         NSDate *normalizedDate = [calendar dateFromComponents:components];
 
-        _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
+        if (frequency == kDaily) {
+            _deadlineDate = normalizedDate;
+        } else {
+            _deadlineDate = [self deadlineDateForDate:normalizedDate frequency:frequency];
+        }
         _prevDeadlineDate = self.deadlineDate;
     }
     return self;
@@ -114,7 +122,7 @@
             // Update event
             [self makeAvailableForCompletion];
             
-            // Update views
+            // Return that model has changed so view can be updated
             deadlineReached = YES;
             
         }
@@ -126,7 +134,7 @@
             // Update event
             [self failedEvent];
             
-            // Update views
+            // Return that model has changed so view can be updated
             deadlineReached = YES;
         }
     }
